@@ -1,16 +1,7 @@
-import cv2 as cv
+import cv2
 from pyzbar.pyzbar import decode
-import random
 
-def pickingContainerColor () -> int:
-    x = random.randint(1,2)
-    
-    if x == 1:
-        return 0
-    else:
-        return 255
-
-webcam = cv.VideoCapture(0)
+webcam = cv2.VideoCapture(0)
 
 if not webcam.isOpened():
     print("Erro ao acessar a câmera. Certifique-se de que a câmera está conectada e funcionando corretamente.")
@@ -19,6 +10,19 @@ else:
 
 while True:
     validacao, frame = webcam.read()
+
+
+
+
+     
+    width  = webcam.get(3)   # float `width`
+    height = webcam.get(4)  # float `height`
+    print(width)
+    print(height)
+
+
+
+
     if not validacao:
         print("Erro ao ler a câmera.")
         break
@@ -26,19 +30,20 @@ while True:
     decoded_objects = decode(frame)
     for obj in decoded_objects:
         rect_pts = obj.rect
-        cv.rectangle(frame, (rect_pts[0], rect_pts[1]), (rect_pts[0] + rect_pts[2], rect_pts[1] + rect_pts[3]), (0, 255, 0), 2)
+        print(rect_pts[0])
+        cv2.rectangle(frame, (rect_pts[0], rect_pts[1]), (rect_pts[0] + rect_pts[2], rect_pts[1] + rect_pts[3]), (0, 255, 0), 2)
 
-        cv.putText(frame, "-> " + str(obj.data.decode('utf-8')), (rect_pts[0] + rect_pts[2] + 10, rect_pts[1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        cv2.putText(frame, "-> " + str(obj.data.decode('utf-8')), (rect_pts[0] + rect_pts[2] + 10, rect_pts[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-    cv.imshow("Leitor de QR Code", frame)
+    cv2.imshow("Leitor de QR Code", frame)
 
-    key = cv.waitKey(1)
+    key = cv2.waitKey(1)
     if key == 27:
         print("Programa encerrado pelo usuário.")
         break
 
 webcam.release()
-cv.destroyAllWindows()
+cv2.destroyAllWindows()
 
 # Camera fixa
 # imagem dividida em 9 quadros
